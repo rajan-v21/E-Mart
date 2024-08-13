@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Form } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './productpage.css';
 import Header from '../../components/Header/Header';
@@ -23,6 +23,8 @@ function ProductPage() {
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ message: '', show: false });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchProduct() {
       try {
@@ -42,42 +44,45 @@ function ProductPage() {
   };
 
   const handleAddToCart = () => {
-    if (product) {
-      const price = (loggedIn && userType > 0) ? 
-                      product.isdiscounted === 1 ? 
-                        product.price - product.price * 0.1 
-                      :
-                        checkboxState ?
-                          product.price - 100
-                        :
-                          product.price
-                    :
-                      product.price;
-      const cartProduct = { 
-        ...product, 
-        price, 
-        key: `${product.productId}-${checkboxState}`, // Unique key for the cart item based on checkbox state
-        appliedCredits: checkboxState
-      };
-      if (checkboxState === true) {
-        if (userEpoint >= 100) {
-          // User has enough points to apply the discount
-          setUserEpoint(userEpoint - 100);
+    if(loggedIn) {
+      if (product) {
+        const price = (userType > 0) 
+                      ? product.isdiscounted === 1 
+                        ? product.price - product.price * 0.1 
+                        : checkboxState 
+                          ? product.price - 100
+                          : product.price
+                      : product.price;
+        const cartProduct = { 
+          ...product, 
+          price, 
+          key: `${product.productId}-${checkboxState}`, // Unique key for the cart item based on checkbox state
+          appliedCredits: checkboxState
+        };
+        if (checkboxState === true) {
+          if (userEpoint >= 100) {
+            // User has enough points to apply the discount
+            setUserEpoint(userEpoint - 100);
+            addToCart(cartProduct);
+            setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+            setNotification({ message: 'Product successfully added to cart', show: true });
+          } else {
+            // User does not have enough points to apply the discount
+            setNotification({ message: 'Not enough credits to apply discount', show: true });
+          }
+        } else {
+          // No discount applied, just add the product to the cart
           addToCart(cartProduct);
           setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
           setNotification({ message: 'Product successfully added to cart', show: true });
-        } else {
-          // User does not have enough points to apply the discount
-          setNotification({ message: 'Not enough credits to apply discount', show: true });
-        }
-      } else {
-        // No discount applied, just add the product to the cart
-        addToCart(cartProduct);
-        setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
-        setNotification({ message: 'Product successfully added to cart', show: true });
-      }      
-      setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
-      setCheckboxState(false);
+        }      
+        setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
+        setCheckboxState(false);
+      }
+    } else {
+      const productpageid = product.productId;
+      navigate('/signup', { state: {productpageid} });
+      setNotification({ message: 'Please SignUp!', show: true });
     }
   };
 

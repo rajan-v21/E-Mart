@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './signpage.css';
 
 function SignInPage() {
@@ -14,6 +14,9 @@ function SignInPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { productpageid, productpageall } = location.state || {};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +41,17 @@ function SignInPage() {
         const user = loginResponse.data;
         sessionStorage.setItem('user', JSON.stringify(user));
 
-        // Redirect to the home page
-        navigate('/', { replace: true });
+        // Redirect to the specific product page
+        if(productpageid){
+          navigate(`/product/${productpageid}`, { replace: true });
+        } 
+        else if(productpageall){
+          navigate(`/products/${productpageall}`, { replace: true });
+        }
+        else // Redirect to the home page
+        {
+          navigate('/', { replace: true });
+        }
         window.location.reload();  // Reload to refresh user data
       }
     } catch (error) {

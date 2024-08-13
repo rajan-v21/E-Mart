@@ -39,48 +39,55 @@ const ProductAllPage = () => {
   }, [subcategoryid]);
 
   const handleAddToCart = (product) => {
-    if (checkboxState[product.productId] && userEpoint < 100) {
-      setNotification({ message: 'Not enough credits to apply discount', show: true });
-      return;
-    }
+    if(loggedIn){
+      if (checkboxState[product.productId] && userEpoint < 100) {
+        setNotification({ message: 'Not enough credits to apply discount', show: true });
+        return;
+      }
 
-    const price = (loggedIn && userType > 0) ? 
-                    product.isdiscounted === 1 ? 
-                      product.price - product.price * 0.1 
-                    :
-                      checkboxState[product.productId] ?
-                        product.price - 100
+      const price = (loggedIn && userType > 0) ? 
+                      product.isdiscounted === 1 ? 
+                        product.price - product.price * 0.1 
                       :
-                        product.price
-                  :
-                    product.price;
-                    
-    const cartProduct = { 
-      ...product, 
-      price, 
-      key: `${product.productId}-${checkboxState[product.productId]}`, // Unique key for the cart item based on checkbox state
-      appliedCredits: checkboxState[product.productId] ? 100 : 0,  // Indicate whether credits were applied
-    };
+                        checkboxState[product.productId] ?
+                          product.price - 100
+                        :
+                          product.price
+                    :
+                      product.price;
+                      
+      const cartProduct = { 
+        ...product, 
+        price, 
+        key: `${product.productId}-${checkboxState[product.productId]}`, // Unique key for the cart item based on checkbox state
+        appliedCredits: checkboxState[product.productId] ? 100 : 0,  // Indicate whether credits were applied
+        checked: checkboxState[product.productId] ? true : false  // Indicate whether the checkbox was checked
+      };
 
-    if (checkboxState[product.productId] === true) {
-      if (userEpoint >= 100) {
-        // User has enough points to apply the discount
-        setUserEpoint(userEpoint - 100);
+      if (checkboxState[product.productId] === true) {
+        if (userEpoint >= 100) {
+          // User has enough points to apply the discount
+          setUserEpoint(userEpoint - 100);
+          addToCart(cartProduct);
+          setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+          setNotification({ message: 'Product successfully added to cart', show: true });
+        } else {
+          // User does not have enough points to apply the discount
+          setNotification({ message: 'Not enough credits to apply discount', show: true });        
+        }
+      } else {
+        // No discount applied, just add the product to the cart
         addToCart(cartProduct);
         setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
         setNotification({ message: 'Product successfully added to cart', show: true });
-      } else {
-        // User does not have enough points to apply the discount
-        setNotification({ message: 'Not enough credits to apply discount', show: true });        
       }
-    } else {
-      // No discount applied, just add the product to the cart
-      addToCart(cartProduct);
-      setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
-      setNotification({ message: 'Product successfully added to cart', show: true });
+      setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
+      setCheckboxState(false);
+    } else{
+      const productpageall = subcategoryid;
+      navigate('/signup', { state: {productpageall} });
+      setNotification({ message: 'Please SignUp!', show: true });
     }
-    setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
-    setCheckboxState(prevState => ({ ...prevState, [product.productId]: !prevState[product.productId] }));
   };
 
   const handleCheckboxChange = (e, productId) => {

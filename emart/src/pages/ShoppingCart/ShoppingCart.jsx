@@ -82,7 +82,7 @@ const ShoppingCart = () => {
                               -
                             </button>
                             <Form.Control type="number" value={item.quantity} readOnly className="quantity-input" />
-                            <button type="button" className="quantity-button" onClick={() => incrementItem(item.key)} disabled={item.quantity >= item.stock || item.appliedCredits > userEpoint}>
+                            <button type="button" className="quantity-button" onClick={() => incrementItem(item.key)} disabled={item.quantity >= item.stock ? true : false}>
                               +
                             </button>
                           </div>

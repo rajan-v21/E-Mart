@@ -38,3 +38,11 @@
     color: #2c2c2c;
     font-size: 16px;   
 }
+
+.MuiBadge-badge {
+    top: 10px;
+    right: 10px;
+    font-size: 0.75rem;
+    height: 18px;
+    min-width: 18px;
+  }

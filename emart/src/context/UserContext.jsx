@@ -10,10 +10,24 @@ export const UserProvider = ({ children }) => {
   const userEmail = loggedIn ? loggedIn.useremail : '';
   const userName = loggedIn ? loggedIn.username : 'Guest';
   const userType = loggedIn ? loggedIn.usertype : 0;
-  const [userEpoint, setUserEpoint] = useState(loggedIn ? loggedIn.epoint : 0);
+  const [userEpoint, setUserEpointState] = useState(loggedIn ? loggedIn.epoint : 0);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  const setUserEpoint = (newEpoint) => {
+    // Ensure that userEpoint does not go below 0
+    if (newEpoint >= 0) {
+      setUserEpointState(newEpoint);
+      // Update the sessionStorage to keep it in sync so on refresh points don't reset to 100
+      // const updatedUser = { ...loggedIn, epoint: newEpoint };
+      // sessionStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
 
   return (
-    <UserContext.Provider value={{loggedIn, userId, userEmail, userName, userType, userEpoint, setUserEpoint }}>
+    <UserContext.Provider value={{
+      loggedIn, userId, userEmail, userName, userType, 
+      cartItemCount, setCartItemCount, 
+      userEpoint, setUserEpoint }}>
       {children}
     </UserContext.Provider>
   );

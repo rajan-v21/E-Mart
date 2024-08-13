@@ -26,11 +26,10 @@ const Footer = () => {
           <div className="contact-card">
             <p>Home</p>
           </div>
-          </a>
-          <div className="contact-card">
-           
-            <p>ContactUS</p>
-          </div>
+        </a>
+        <div className="contact-card">
+          <p>Contact Us</p>
+        </div>
         </div>
       </div>
     </div>

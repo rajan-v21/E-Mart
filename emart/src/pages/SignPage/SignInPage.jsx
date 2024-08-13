@@ -40,7 +40,7 @@ function SignInPage() {
 
         // Redirect to the home page
         navigate('/', { replace: true });
-        // window.location.reload();  // Reload to refresh user data
+        window.location.reload();  // Reload to refresh user data
       }
     } catch (error) {
       if (error.loginResponse && error.loginResponse.status === 401) {

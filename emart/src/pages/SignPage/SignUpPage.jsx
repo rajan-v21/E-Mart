@@ -49,7 +49,7 @@ function SignUpPage() {
         useremail: formData.useremail,
         password: formData.password,
         usertype: formData.usertype ? 1 : 0,
-        epoint: formData.usertype ? 100 : 0
+        epoint: formData.usertype ? 500 : 0
       });
 
       if (response.status === 200) {

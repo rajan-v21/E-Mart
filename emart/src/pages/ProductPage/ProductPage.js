@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -8,10 +8,11 @@ import Header from '../../components/Header/Header';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import Rating from '../../components/Rating/Rating';
 import Notification from '../../components/Notification/Notification';
+import { UserContext } from '../../context/UserContext';
 
 function ProductPage() {
 
-  const user = JSON.parse(sessionStorage.getItem('user'));
+  const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
 
   const { productId } = useParams();
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ function ProductPage() {
 
   const handleAddToCart = () => {
     if (product) {
-      const price = (user && user.usertype > 0) ? 
+      const price = (loggedIn && userType > 0) ? 
                       product.isdiscounted === 1 ? 
                         product.price - product.price * 0.1 
                       :
@@ -58,10 +59,25 @@ function ProductPage() {
         key: `${product.productId}-${checkboxState}`, // Unique key for the cart item based on checkbox state
         appliedCredits: checkboxState
       };
-      addToCart(cartProduct);
-      setCheckboxState(false);
-      setNotification({ message: 'Product successfully added to cart', show: true });
+      if (checkboxState === true) {
+        if (userEpoint >= 100) {
+          // User has enough points to apply the discount
+          setUserEpoint(userEpoint - 100);
+          addToCart(cartProduct);
+          setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+          setNotification({ message: 'Product successfully added to cart', show: true });
+        } else {
+          // User does not have enough points to apply the discount
+          setNotification({ message: 'Not enough credits to apply discount', show: true });
+        }
+      } else {
+        // No discount applied, just add the product to the cart
+        addToCart(cartProduct);
+        setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+        setNotification({ message: 'Product successfully added to cart', show: true });
+      }      
       setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
+      setCheckboxState(false);
     }
   };
 
@@ -108,7 +124,7 @@ function ProductPage() {
 
           <p><Rating value={product.rating} /></p>
           
-          {user && user.usertype > 0 ? 
+          {loggedIn && userType > 0 ? 
             (product.isdiscounted === 0)? (
               <div>
                 <p className='price-s'>₹{product.price}</p>
@@ -148,8 +164,10 @@ function ProductPage() {
           <br />
           <button className="add-to-cart" 
             onClick={handleAddToCart}
-            disabled={product.stockquantity <= 0}>Add to cart</button>
-          <button className="buy-now">Buy Now</button>
+            disabled={
+              product.stockquantity <= 0 //  || !loggedIn ||
+              }>Add to cart</button>
+          <button className="buy-now" disabled={product.stockquantity <= 0}>Buy Now</button>
           <br />
           <div className="delivery">
             <label>Enter Delivery Pincode</label><br />

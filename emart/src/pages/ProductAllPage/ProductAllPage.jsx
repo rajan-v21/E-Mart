@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Card, Alert } from 'react-bootstrap';
@@ -7,13 +7,12 @@ import Header from '../../components/Header/Header';
 import Rating from '../../components/Rating/Rating';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import { useCart } from '../../context/CartContext';
+import { UserContext } from '../../context/UserContext';
 import Notification from '../../components/Notification/Notification';
 
 const ProductAllPage = () => {
 
-  const user = JSON.parse(sessionStorage.getItem('user'));
-
-  let userCredits = 100;
+  const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
 
   const { subcategoryid } = useParams();
   const navigate = useNavigate();
@@ -40,12 +39,12 @@ const ProductAllPage = () => {
   }, [subcategoryid]);
 
   const handleAddToCart = (product) => {
-    if (checkboxState[product.productId] && user.epoint < 100) {
+    if (checkboxState[product.productId] && userEpoint < 100) {
       setNotification({ message: 'Not enough credits to apply discount', show: true });
       return;
     }
 
-    const price = (user && user.usertype > 0) ? 
+    const price = (loggedIn && userType > 0) ? 
                     product.isdiscounted === 1 ? 
                       product.price - product.price * 0.1 
                     :
@@ -63,13 +62,25 @@ const ProductAllPage = () => {
       appliedCredits: checkboxState[product.productId] ? 100 : 0,  // Indicate whether credits were applied
     };
 
-    if (checkboxState[product.productId]) {
-      user.epoint -= 100;  // Deduct credits if applied
+    if (checkboxState[product.productId] === true) {
+      if (userEpoint >= 100) {
+        // User has enough points to apply the discount
+        setUserEpoint(userEpoint - 100);
+        addToCart(cartProduct);
+        setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+        setNotification({ message: 'Product successfully added to cart', show: true });
+      } else {
+        // User does not have enough points to apply the discount
+        setNotification({ message: 'Not enough credits to apply discount', show: true });        
+      }
+    } else {
+      // No discount applied, just add the product to the cart
+      addToCart(cartProduct);
+      setCartItemCount(prevCount => prevCount + 1); // Increment cart item count
+      setNotification({ message: 'Product successfully added to cart', show: true });
     }
-
-    addToCart(cartProduct);
-    setNotification({ message: 'Product successfully added to cart', show: true });
     setTimeout(() => setNotification({ ...notification, show: false }), 3000); // Hide after 3 seconds
+    setCheckboxState(prevState => ({ ...prevState, [product.productId]: !prevState[product.productId] }));
   };
 
   const handleCheckboxChange = (e, productId) => {
@@ -126,7 +137,7 @@ const ProductAllPage = () => {
                         : <p className="fine-print text-danger">Out of Stock</p>}
 
                       <p><Rating value={product.rating} /></p>
-                      {user && user.usertype === 1 ?
+                      {loggedIn && userType === 1 ?
                         product.isdiscounted === 1 ? (
                           <div className='offer-product'>
                             <p className="price-s"><s>₹{product.price}</s></p>

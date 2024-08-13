@@ -7,13 +7,14 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
+import { Badge } from '@mui/material';
 import './header.css';
 import SearchBar from './SearchBar/SearchBar';
 import { UserContext } from '../../context/UserContext';
 
 const Header = () => {
-  const { loggedIn, userName, userType, userEpoint } = useContext(UserContext);
-  
+  const { loggedIn, userName, userType, userEpoint, cartItemCount } = useContext(UserContext);
+
   const handleLogout = () => {
     sessionStorage.removeItem('user');
     window.location.reload();
@@ -54,7 +55,9 @@ const Header = () => {
         )}
         <Link to="/shoppingcart">
           <IconButton className='linkto-iconbutton'>
-            <ShoppingCartIcon />
+            <Badge badgeContent={cartItemCount} color="error">
+              <ShoppingCartIcon />
+            </Badge>
           </IconButton>
         </Link>
         <Link to="/favorite">

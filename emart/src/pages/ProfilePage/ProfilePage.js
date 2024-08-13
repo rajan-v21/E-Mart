@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import { Container, Row, Col, Card } from 'react-bootstrap';
+import { UserContext } from '../../context/UserContext';
 
 const ProfilePage = () => {
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    const { loggedIn, userName, userEmail, userType, userEpoint} = useContext(UserContext);
 
-    if (!user) {
+    if (!loggedIn) {
         return <LoadingSpinner />;
     }
 
@@ -16,11 +17,11 @@ const ProfilePage = () => {
                     <Card>
                         <Card.Header>User Profile</Card.Header>
                         <Card.Body>
-                            <Card.Title>{user.username}</Card.Title>
+                            <Card.Title>{userName}</Card.Title>
                             <Card.Text>
-                                <strong>Email:</strong> {user.useremail} <br />
-                                <strong>Epoints:</strong> {user.epoint} <br />
-                                {/* Add more user details here */}
+                                <strong>Email:</strong> {userEmail} <br />
+                                <strong>Epoints:</strong> {userEpoint} <br />
+                                <strong>Membership:</strong> {userType > 0 ? 'Prime' : 'Regular' } <br />
                             </Card.Text>
                         </Card.Body>
                     </Card>

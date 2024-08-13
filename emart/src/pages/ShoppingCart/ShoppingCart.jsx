@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -7,18 +7,15 @@ import { useCart } from '../../context/CartContext';
 import EmptyCart from '../../components/EmptyCart/EmptyCart';
 import Header from '../../components/Header/Header';
 import Notification from '../../components/Notification/Notification';
+import { UserContext } from '../../context/UserContext';
 import './shoppingcart.css'; // CSS for styling
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
+  const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
   const { cartItems, incrementItem, decrementItem, removeFromCart } = useCart();
   const [notification, setNotification] = useState({ message: '', show: false });
-
-  // const { user } = useAuth(); // Access user data from context
-
-  const _isLoggedin = true;
-  const _userType = 1; 
-  const _userCredits = 100; 
+  
   let _totalCredits = 0;
 
   const handleContinueShopping = () => {
@@ -30,14 +27,14 @@ const ShoppingCart = () => {
   };
 
   const onCheckOut = () => {
-    if(!_isLoggedin) {
-      setNotification({ message: 'Please login', show: true });
+    if(!loggedIn) {
+      setNotification({ message: 'Please SignUp!', show: true });
     }
     else if(cartItems.length === 0) {
       setNotification({ message: 'Cart is empty', show: true });
       return;
     }
-    else if(_userCredits < _totalCredits) {
+    else if(userEpoint < _totalCredits) {
       setNotification({ message: 'Insufficient credits', show: true });
       return;
     }
@@ -70,7 +67,7 @@ const ShoppingCart = () => {
                         <h5>{item.name}</h5>
                         <p>
                           <strong>Each: </strong>₹{item.price.toFixed(2)}
-                          {item.appliedCredits && _isLoggedin && _userType === 1 ? (
+                          {item.appliedCredits && loggedIn && userType === 1 ? (
                             <>
                               {' + '}
                               <img className='coin-32px' src={`${process.env.PUBLIC_URL}/assets/images/coin.png`} alt="Coin" />
@@ -85,23 +82,23 @@ const ShoppingCart = () => {
                               -
                             </button>
                             <Form.Control type="number" value={item.quantity} readOnly className="quantity-input" />
-                            <button type="button" className="quantity-button" onClick={() => incrementItem(item.key)}>
+                            <button type="button" className="quantity-button" onClick={() => incrementItem(item.key)} disabled={item.quantity >= item.stock || item.appliedCredits > userEpoint}>
                               +
                             </button>
                           </div>
                         </Form.Group>
                         <p>
                           <strong>Total: </strong>₹{(item.price * item.quantity).toFixed(2)}
-                          {item.appliedCredits && _isLoggedin && _userType === 1 ? (
+                          {item.appliedCredits && loggedIn && userType === 1 ? (
                             <>
                               {' + '}
                               <img className='coin-32px' src={`${process.env.PUBLIC_URL}/assets/images/coin.png`} alt="Coin" />
                               {_totalCredits = 100 * item.quantity}
-                              {_totalCredits > _userCredits && (
+                              {/* {_totalCredits > userEpoint && (
                                 <span className='text-danger'>
-                                  {` (Not enough credits by ${_totalCredits - _userCredits})`}
+                                  {` (Not enough credits by ${_totalCredits - userEpoint} points)`}
                                 </span>
-                              )}
+                              )} */}
                             </>
                           ) : null}
                         </p>

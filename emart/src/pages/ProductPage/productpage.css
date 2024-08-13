@@ -1,0 +1,201 @@
+.product-card {
+  display: flex;
+  max-height: 100vh;
+  max-width: 100vw;
+  margin: 2% 2% 2% 2%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  height: 300pt;
+  width: 300pt;
+  border-radius: 8px;
+}
+
+#product-name{
+  display: inline-block;
+  margin-right: 8px;
+
+}
+
+#product-description{
+  display: inline-block;
+}
+
+.product-details {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.product-details h2 {
+  font-size: 1.5em;
+  color: gray;
+  margin-bottom: 10px;
+}
+
+.price {
+  display: inline;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.price-s{
+  display: inline;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.offer-product{
+  display: inline-block;
+}
+
+.discounted-price {
+  display: inline;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: red;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.add-to-cart {
+  width: 200px;
+  display: inline-block;
+  margin-right: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  border: none;
+  border-radius: 0.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  overflow: hidden;
+  background-color: black;
+  color: rgb(255 255 255 /1);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.3s;
+}
+
+.add-to-cart:hover{
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  --tw-gradient-from: black var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(34 197 94 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: black var(--tw-gradient-to-position);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+  var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+--tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+  calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+  var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-width: 2px;
+  --tw-ring-opacity: 1;
+  --tw-ring-color: black;
+}
+
+.buy-now{
+  width: 200px;
+  display: inline-block;
+  border: none;
+  position: relative;
+  border-radius: 0.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  overflow: hidden;
+  background-color: rgb(34 197 94 / 1);
+  color: rgb(255 255 255 /1);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 0.3s;
+}
+
+
+.buy-now:hover {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  --tw-gradient-from: #22c55e var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(34 197 94 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #4ade80 var(--tw-gradient-to-position);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+  var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+--tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+  calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+  var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-width: 2px;
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(74 222 128 / var(--tw-ring-opacity));
+}
+
+.delivery{
+  margin-bottom: 10px;
+}
+
+.check{
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-weight: 500;
+  background-color: rgb(219 234 254 / 0.6);
+  color: rgb(59 130 246 / 1);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-left: 10px;
+}
+.check:hover {
+  background-color: rgb(219 234 254 /1);
+  color: rgb(37 99 235 / 1);
+}
+
+.color-options, .storage-options {
+  display: flex;
+}
+
+.color-options button, .storage-options button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.color-options button.active, .storage-options button.active {
+  background-color: #f0f0f0;
+}
+
+.fine-print {
+  font-size: 0.9em;
+  color: gray;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

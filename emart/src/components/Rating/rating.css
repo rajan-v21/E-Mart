@@ -1,0 +1,12 @@
+.rating {
+    display: flex;
+  }
+  
+  .filled-star {
+    color: gold;
+  }
+  
+  .empty-star {
+    color: lightgray;
+  }
+  

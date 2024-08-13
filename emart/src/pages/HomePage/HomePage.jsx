@@ -5,12 +5,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import './homepage.css';
-import Header from '../components/Header/Header';
-import Categories from './Categories/Categories';
-import SubCategories from './Categories/SubCategories/SubCategories';
-import AboutUs from '../components/AboutUs/AboutUs';
-import ContactUs from '../components/ContactUs/ContactUs';
-import Footer from '../components/Footer/Footer';
+import Header from '../../components/Header/Header';
+import Footer from '../../components/Footer/Footer';
+import Categories from '../Categories/Categories';
+import SubCategories from '../Categories/SubCategories/SubCategories';
+import AboutUs from '../../components/AboutUs/AboutUs';
+import ContactUs from '../../components/ContactUs/ContactUs';
 
 
 const carouselItems = [

@@ -53,9 +53,7 @@ function SignUpPage() {
       });
 
       if (response.status === 200) {
-        const { token, user } = response.data;
-        // localStorage.setItem('token', token);
-        // localStorage.setItem('user', JSON.stringify(user));
+        setPasswordError('');
         navigate('/signin', { replace: true });
         //navigate('/', { replace: true });
       } else {

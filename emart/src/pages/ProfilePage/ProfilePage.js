@@ -1,12 +1,12 @@
 import React from 'react';
-import { useAuth } from '../../context/AuthContext';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const ProfilePage = () => {
-    const { user } = useAuth(); // Access user data from context
+    const user = JSON.parse(sessionStorage.getItem('user'));
 
     if (!user) {
-        return <p>Loading...</p>;
+        return <LoadingSpinner />;
     }
 
     return (
@@ -18,7 +18,7 @@ const ProfilePage = () => {
                         <Card.Body>
                             <Card.Title>{user.username}</Card.Title>
                             <Card.Text>
-                                <strong>Email:</strong> {user.email} <br />
+                                <strong>Email:</strong> {user.useremail} <br />
                                 <strong>Epoints:</strong> {user.epoint} <br />
                                 {/* Add more user details here */}
                             </Card.Text>

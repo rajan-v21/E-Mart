@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Alert } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
 import './productpage.css';
 import Header from '../../components/Header/Header';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
@@ -11,7 +10,9 @@ import Rating from '../../components/Rating/Rating';
 import Notification from '../../components/Notification/Notification';
 
 function ProductPage() {
-  // const { isLoggedIn, userType, userCredits } = useAuth();
+
+  const user = JSON.parse(sessionStorage.getItem('user'));
+
   const { productId } = useParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
@@ -20,10 +21,6 @@ function ProductPage() {
   const [checkboxState, setCheckboxState] = useState(false);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ message: '', show: false });
-
-  let isLoggedIn = true;
-  let userType = 1;
-  let userCredits = 100;
 
   useEffect(() => {
     async function fetchProduct() {
@@ -45,7 +42,7 @@ function ProductPage() {
 
   const handleAddToCart = () => {
     if (product) {
-      const price = (isLoggedIn && userType === 1) ? 
+      const price = (user && user.usertype > 0) ? 
                       product.isdiscounted === 1 ? 
                         product.price - product.price * 0.1 
                       :
@@ -90,17 +87,6 @@ function ProductPage() {
     );
   }
 
-  // if (!product) {
-  //   return (
-  //     <div>
-  //       <Header />
-  //       <div className="product-card">
-  //         <p>Product not found.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
       <Header />
@@ -113,7 +99,7 @@ function ProductPage() {
           />
         </div>
         <div className="product-details">
-          <h1 id="product-name">{product.productname}</h1>
+          <h3 id="product-name">{product.productname}</h3>
           <h2 id="product-description">({product.shortdesc}, {selectedStorage} GB)</h2>
           
           {product.stockQuantity === 0 ? 
@@ -122,7 +108,7 @@ function ProductPage() {
 
           <p><Rating value={product.rating} /></p>
           
-          {isLoggedIn && userType === 1 ? 
+          {user && user.usertype > 0 ? 
             (product.isdiscounted === 0)? (
               <div>
                 <p className='price-s'>₹{product.price}</p>

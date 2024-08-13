@@ -5,17 +5,17 @@ import App from './App';
 import './axiosSetup'; 
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { CartProvider } from './context/CartContext'; // Import CartProvider
-import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
+import { CartProvider } from './context/CartContext';
+import { UserProvider } from './context/UserContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthProvider> {/* Wrap the App with AuthProvider */}
-      <CartProvider> {/* Then wrap it with CartProvider */}
+    <UserProvider>
+      <CartProvider>
         <App />
       </CartProvider>
-    </AuthProvider>
+    </UserProvider>
   </React.StrictMode>
 );
 

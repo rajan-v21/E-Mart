@@ -10,8 +10,9 @@ import { useCart } from '../../context/CartContext';
 import Notification from '../../components/Notification/Notification';
 
 const ProductAllPage = () => {
-  let _isLoggedin = true;
-  let _userType = 1;
+
+  const user = JSON.parse(sessionStorage.getItem('user'));
+
   let userCredits = 100;
 
   const { subcategoryid } = useParams();
@@ -39,12 +40,12 @@ const ProductAllPage = () => {
   }, [subcategoryid]);
 
   const handleAddToCart = (product) => {
-    if (checkboxState[product.productId] && userCredits < 100) {
+    if (checkboxState[product.productId] && user.epoint < 100) {
       setNotification({ message: 'Not enough credits to apply discount', show: true });
       return;
     }
 
-    const price = (_isLoggedin && _userType === 1) ? 
+    const price = (user && user.usertype > 0) ? 
                     product.isdiscounted === 1 ? 
                       product.price - product.price * 0.1 
                     :
@@ -63,7 +64,7 @@ const ProductAllPage = () => {
     };
 
     if (checkboxState[product.productId]) {
-      userCredits -= 100;  // Deduct credits if applied
+      user.epoint -= 100;  // Deduct credits if applied
     }
 
     addToCart(cartProduct);
@@ -125,7 +126,7 @@ const ProductAllPage = () => {
                         : <p className="fine-print text-danger">Out of Stock</p>}
 
                       <p><Rating value={product.rating} /></p>
-                      {_isLoggedin && _userType === 1 ?
+                      {user && user.usertype === 1 ?
                         product.isdiscounted === 1 ? (
                           <div className='offer-product'>
                             <p className="price-s"><s>₹{product.price}</s></p>

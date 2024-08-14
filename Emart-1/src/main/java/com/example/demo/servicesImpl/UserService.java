@@ -19,7 +19,8 @@ public class UserService {
 
         // Check if the user is a prime member
         if (user.getUsertype() == 1) {
-            user.setEpoint(100); // Assign 100 ePoints to prime members
+            int points = user.getEpoint();
+        	user.setEpoint(points); // Assign 500 ePoints to prime members
         }
 
         userRepository.save(user);

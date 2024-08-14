@@ -1,18 +1,21 @@
 import React from 'react';
 import './aboutus.css';
+import { useTranslation } from 'react-i18next';
 
 const AboutUs = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="about-container">
       <div className="about-left">
-        <h1>about Us</h1>
-        <h3>"Shop Smart, Live Better."</h3>
+        <h1 className='about-left-h1'>{t('aboutUs.title')}</h1>
+        <h3 className='about-left-h3'>{t('aboutUs.tagline')}</h3>
       </div>
       <div className="about-right">
         <p>
-        Welcome to E-mart, your go-to online shopping destination. We are dedicated to providing our customers with a seamless and enjoyable shopping experience, offering a wide range of high-quality products at competitive prices. Our mission is to bring you the best selection of items, from everyday essentials to unique finds, all in one convenient place. At E-mart, we prioritize customer satisfaction and strive to deliver exceptional service with every purchase. Join us on our journey to redefine online shopping, where savings meet style and convenience. Thank you for choosing e-Mart, where your needs are our top priority.
+          {t('aboutUs.description')}
         </p>
-        <button className="read-more-button">READ MORE</button>
+        <button className="read-more-button">{t('aboutUs.readMore')}</button>
       </div>
     </div>
   );

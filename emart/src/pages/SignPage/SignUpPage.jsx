@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './signpage.css';
 
 function SignUpPage() {
@@ -18,6 +18,9 @@ function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showReEnterPassword, setShowReEnterPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { productpageid, productpageall } = location.state || {};
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -54,7 +57,16 @@ function SignUpPage() {
 
       if (response.status === 200) {
         setPasswordError('');
-        navigate('/signin', { replace: true });
+        if(productpageid){
+          navigate('/signin', { replace: true }, {state: productpageid} );
+        } 
+        else if(productpageall){
+          navigate('/sigin', { replace: true }, {state: productpageall} );
+        }
+        else // Redirect to the home page
+        {
+          navigate('/signin', { replace: true});
+        }
         //navigate('/', { replace: true });
       } else {
         setPasswordError('SignUp Failed');

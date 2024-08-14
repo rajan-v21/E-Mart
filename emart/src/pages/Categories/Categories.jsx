@@ -3,8 +3,10 @@ import { Card, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './categories.css';
+import { useTranslation } from 'react-i18next';
 
 const Categories = ({ onSelectCategory }) => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const Categories = ({ onSelectCategory }) => {
 
   return (
     <div className="categories">
-      <h4>Shop by Category:</h4>
+      <h4>{t('categories.shopByCategory')}</h4>
       {Array.isArray(categories) && categories.length > 0 ? (
         categories.map((category) => (
           <Card className='card-category'
@@ -39,13 +41,13 @@ const Categories = ({ onSelectCategory }) => {
             <Card.Img
               variant="top"
               src={`${process.env.PUBLIC_URL}${category.imagepath}`} // Construct the full URL correctly
-              alt={category.categoryname}
+              alt={t(`categories.${category.categoryName}`)}
             />
-            <Card.Title className="card-text">{category.categoryName}</Card.Title>
+            <Card.Title className="card-text">{t(`categories.${category.categoryName}`)}</Card.Title>
           </Card>
         ))
       ) : (
-        <Alert variant="warning">No Categories available.</Alert>
+        <Alert variant="warning">{t('categories.noCategoriesAvailable')}</Alert>
       )}
     </div>
   );

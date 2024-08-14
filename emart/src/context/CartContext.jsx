@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
 
   const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
 
-  const originalEpoint = userEpoint;
+  let originalEpoint = userEpoint;
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -37,14 +37,19 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.key === key 
-          ? { ...item, 
-            quantity: (item.checked && userEpoint >= 100) ? 
-              (setUserEpoint(userEpoint - 100), item.quantity + 1) : 
-              (!item.checked) && item.quantity + 1 
-            } 
-            //(setCartItemCount(prevCount => prevCount + 1), item.quantity)
-            //item.checked && userEpoint >= 100 ? (setUserEpoint(userEpoint - 100), item.quantity + 1 ) : item.quantity  } 
-          : item
+          ? {
+            ...item,
+            quantity:
+              item.checked
+                ?  userEpoint >= 100 
+                    ? (setUserEpoint(userEpoint - 100), 
+                      setCartItemCount((prevCount) => prevCount + 1), 
+                      console.log(item.quantity + 1),
+                      item.quantity + 1) 
+                    : item.quantity
+                : item.quantity+1,
+          }
+        : item.quantity
       )
     );
   };
@@ -53,15 +58,20 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.key === key 
-          ? { ...item, 
-            //originalEpoint is getting updated everytime with userEpoint
-            quantity: (item.checked && userEpoint < originalEpoint) ? 
-            (setUserEpoint(userEpoint + 100), Math.max(item.quantity - 1, 1)) : 
-            (!item.checked) ? 
-              Math.max(item.quantity - 1, 1) : 
-              (setCartItemCount(prevCount => prevCount - 1), item.quantity)}
-            //Math.max(item.quantity - 1, 1) } 
-          : item
+          ? {
+            ...item,
+            quantity:
+              item.checked
+                ?  userEpoint < originalEpoint 
+                    ? (setUserEpoint((prevEpoints) => Math.min(prevEpoints + 100, originalEpoint)),
+                      setCartItemCount((prevCount) => Math.max(prevCount - 1, 0)),
+                      Math.max(item.quantity - 1, 1)) 
+                    : item.quantity
+                : !item.checked
+                ? Math.max(item.quantity - 1, 1)
+                : item.quantity,
+          }
+        : item.quantity
       )
     );
   };

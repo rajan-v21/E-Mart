@@ -135,8 +135,8 @@ const ProductAllPage = () => {
                       <Card.Img className='card-product-img' src={product.imagepath} alt={product.productname} />
                     </Col>
                     <Col>
-                      <h4 id="product-name"><strong>{product.productname}</strong></h4>
-                      <h5 id="product-description" style={{ color: "#a9a9a9" }}>({product.shortdesc})</h5>
+                      <h4 className='product-name'>{product.productname}</h4>
+                      <h5 className="product-description">({product.shortdesc})</h5>
                       <p className="fine-print">Brand: {product.brandname}</p>
 
                       {product.stockquantity > 0 ?

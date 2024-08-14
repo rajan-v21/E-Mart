@@ -13,6 +13,12 @@ export const UserProvider = ({ children }) => {
   const [userEpoint, setUserEpointState] = useState(loggedIn ? loggedIn.epoint : 0);
   const [cartItemCount, setCartItemCount] = useState(0);
 
+  // const setCartItemCount = (newCount) => {
+  //   if (newCount >= 0) {
+  //     setCartItemCountState(newCount);
+  //   }
+  // };
+
   const setUserEpoint = (newEpoint) => {
     // Ensure that userEpoint does not go below 0
     if (newEpoint >= 0) {

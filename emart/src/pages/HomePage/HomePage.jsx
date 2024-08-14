@@ -4,6 +4,7 @@ import { Carousel, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 import './homepage.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
@@ -12,27 +13,27 @@ import SubCategories from '../Categories/SubCategories/SubCategories';
 import AboutUs from '../../components/AboutUs/AboutUs';
 import ContactUs from '../../components/ContactUs/ContactUs';
 
-
 const carouselItems = [
   {
     brand: '/assets/images/brandlogo/apple-logo.png',
-    product: 'iPhone 15 Series',
-    offer: 'Up to 10% off Voucher',
+    product: 'iphone15',
+    offer: 'upto10offvoucher',
     link: '/product/1',
-    imageSrc: '/assets/images/banner/iphone15-banner.png', // Ensure correct image path
+    imageSrc: '/assets/images/banner/iphone15-banner.png',
     altText: 'iPhone 15'
   },
   {
     brand: '/assets/images/brandlogo/lg-logo.png',
-    product: 'LG UHD 4K TVs',
-    offer: 'Up to 15% off Voucher',
+    product: 'lguhd',
+    offer: 'upto15offvoucher',
     link: '/product/0',
-    imageSrc: '/assets/images/banner/tv-banner.png', // Ensure correct image path
+    imageSrc: '/assets/images/banner/tv-banner.png',
     altText: 'LG UHD'
   },
 ];
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategorySelect = (categoryId) => {
@@ -52,26 +53,26 @@ const HomePage = () => {
             {carouselItems.map((item, index) => (
               <Carousel.Item key={index}>
                 <div className="banner">
-                <div className="banner-content">
-                    <img src={`${process.env.PUBLIC_URL}${item.brand}`} alt="Apple Logo" className="brand-logo" />
-                    <h1 className="product">{item.product}</h1>
-                    <h2 className="offer">{item.offer}</h2>
+                  <div className="banner-content">
+                    <img src={`${process.env.PUBLIC_URL}${item.brand}`} alt={t(`homepage.carousel.${item.product}.brandAlt`)} className="brand-logo" />
+                    <h1 className="product">{t(`homepage.carousel.${item.product}.product`)}</h1>
+                    <h2 className="offer">{t(`homepage.carousel.${item.product}.offer`)}</h2>
                     <Link
                       to={item.link}
                       className="shop-now"
-                      onClick={(e) => e.stopPropagation()} // Prevent carousel sliding
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Shop Now
+                      {t('homepage.shopNow')}
                     </Link>
                   </div>
                   <div className="banner-image">
                     <img
                       className='banner-img'
-                      src={`${process.env.PUBLIC_URL}${item.imageSrc}`} // Ensure the image path is correct
+                      src={`${process.env.PUBLIC_URL}${item.imageSrc}`}
                       alt={item.altText}
                     />
                   </div>
-              </div>
+                </div>
               </Carousel.Item>
             ))}
           </Carousel>
@@ -84,18 +85,16 @@ const HomePage = () => {
           <div>
             <button className="back-to-categories" onClick={handleBackToCategories}>
               <FontAwesomeIcon className="arrow" icon={faAngleLeft} />
-              Back to Categories
+              {t('homepage.backToCategories')}
             </button>
             <SubCategories categoryId={selectedCategory} />
           </div>
         )}
-        
-      </div> 
-      <AboutUs/>
-      <ContactUs/>
-      <Footer/> 
+      </div>
+      <AboutUs />
+      <ContactUs />
+      <Footer />
     </div>
-    
   );
 };
 

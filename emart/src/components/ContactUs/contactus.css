@@ -27,7 +27,7 @@
     margin-left: 20px; /* Align the form to the right side */
   }
   
-  .contact-form-container h2 {
+  .contact-form-container {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 20px;
@@ -77,4 +77,8 @@
   
   .submit-button:hover {
     background-color: #0056b3;
+  }
+
+  .fullNameLabel, .emailLabel, .messageLabel {
+    font-size: 1.5rem;
   }

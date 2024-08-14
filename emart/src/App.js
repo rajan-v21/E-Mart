@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import ProductAllPage from './pages/ProductAllPage/ProductAllPage';
 import ThankYou from './components/ThankYou/ThankYou';
+import './i18n'; // Make sure this is correct
 
 function App() {
   return (

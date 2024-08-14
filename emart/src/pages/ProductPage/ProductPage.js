@@ -120,8 +120,8 @@ function ProductPage() {
           />
         </div>
         <div className="product-details">
-          <h3 id="product-name">{product.productname}</h3>
-          <h2 id="product-description">({product.shortdesc}, {selectedStorage} GB)</h2>
+          <h2 className="product-name">{product.productname}</h2>
+          <h3 className="product-description">({product.shortdesc}, {selectedStorage} GB)</h3>
           
           {product.stockQuantity === 0 ? 
             <p className="fine-print text-danger">Out of Stock</p> 
@@ -154,14 +154,14 @@ function ProductPage() {
             <p className="price">₹{product.price}</p>
           )}
 
-          <p>{product.longdesc}</p>
-          <h3>Storage</h3>
+          <p className='longdesc-p'>{product.longdesc}</p>
+          <h3 className='storage-h3'>Storage</h3>
           <div className="storage-options">
             {storages.map((storage) => (
               <button
                 key={storage}
                 onClick={() => handleStorageChange(storage)}
-                className={storage === selectedStorage ? 'active' : ''}>
+                className={storage === selectedStorage ? 'storage-button current' : 'storage-button'}>
                 {storage} GB
               </button>
             ))}
@@ -175,8 +175,8 @@ function ProductPage() {
           <button className="buy-now" disabled={product.stockquantity <= 0}>Buy Now</button>
           <br />
           <div className="delivery">
-            <label>Enter Delivery Pincode</label><br />
-            <input type="text" placeholder="Enter pincode" />
+            <label className='delivery-label'>Enter Delivery Pincode</label><br />
+            <input className='delivery-input' type="text" placeholder="Enter pincode" />
             <button className="check">Check</button>
           </div>
           <p className="fine-print">Delivery may take up to 6-7 days depending on the pincode</p>

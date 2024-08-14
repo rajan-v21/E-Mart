@@ -1,35 +1,34 @@
 import React from 'react';
 import './footer.css';
 import { Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
-
+  const { t } = useTranslation();
 
   return (
     <div className="footer-container">
       <div className="footer-content">
         <div className="contact-info">
-          <h1>Get in Touch</h1>
+          <h1>{t('footer.getInTouch')}</h1>
           <p>
-          "Discover the future of shopping with eMart, where convenience meets innovation, 
-          offering a seamless shopping experience with unbeatable prices and exceptional customer service."
+            {t('footer.description')}
           </p>
-         <div>
+          <div>
             <Button variant="outline-secondary" className="social-login-buttons"><i className="bi-facebook"></i></Button>
             <Button variant="outline-secondary" className="social-login-buttons"><i className="bi bi-google"></i></Button>
             <Button variant="outline-secondary" className='social-login-buttons'><i className="bi bi-linkedin"></i></Button>
-          
           </div>
         </div>
         <div className="contact-links">
-        <a href='#' class="home">
+          <a href='#' className="home">
+            <div className="contact-card">
+              <p>{t('footer.home')}</p>
+            </div>
+          </a>
           <div className="contact-card">
-            <p>Home</p>
+            <p>{t('footer.contactUs')}</p>
           </div>
-        </a>
-        <div className="contact-card">
-          <p>Contact Us</p>
-        </div>
         </div>
       </div>
     </div>

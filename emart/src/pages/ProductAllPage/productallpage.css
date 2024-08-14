@@ -11,10 +11,10 @@
 
 .card-productall {
   display: flex;
-  height: 100%;
+  
   width: 100%;
   margin: 2% 4% 0% 0%;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px 0px 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -52,7 +52,7 @@
   border-radius: 5px;
 }
 
-.cart-summary h4 {
+.cart-summary {
   margin-bottom: 15px;
 }
 
@@ -71,4 +71,37 @@
 
 .cart-summary .text-success {
   color: green;
+}
+
+.product-name{
+  display: inline-block;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.product-description{
+  display: inline-block;
+  font-size: 1.25rem;
+  color: gray;
+}
+
+.price {
+  display: inline;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.price-s{
+  display: inline;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.discounted-price{
+  display: inline;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: red;
+  margin-left: 10px;
 }

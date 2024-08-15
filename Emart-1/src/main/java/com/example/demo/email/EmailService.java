@@ -42,6 +42,7 @@ public class EmailService {
 
         } catch (MessagingException e) {
             e.printStackTrace();
+            System.out.println("Error while sending email: " + e.getMessage());
             return "Error while sending mail!!!";
         }
     }

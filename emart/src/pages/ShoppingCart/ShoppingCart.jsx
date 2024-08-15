@@ -13,16 +13,24 @@ import axios from 'axios'; // Import axios for making API calls
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { v4 as uuidv4 } from 'uuid';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import Invoice from '../../components/Invoice/Invoice';
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
+  const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
   const { cartItems, incrementItem, decrementItem, removeFromCart } = useCart();
-  const cartRef = useRef(null); // Use this ref to capture the entire container
+  const invoiceRef = useRef(null); // Use this ref to capture the entire container
   const { userEmail, userName } = useContext(UserContext); // Get userEmail and userName from context
   const [notification, setNotification] = useState({ message: '', show: false });
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const handleContinueShopping = () => {
     navigate('/', { replace: true });
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
   const handleCheckout = async () => {
@@ -31,9 +39,11 @@ const ShoppingCart = () => {
       return;
     }
 
+    setIsPlacingOrder(true);
+
     try {
       // Generate PDF from the entire shopping cart container
-      const cartElement = cartRef.current;
+      const cartElement = invoiceRef.current;
 
       // Capture the cartElement as a canvas with a lower scale (for compression)
       const canvas = await html2canvas(cartElement, {
@@ -103,55 +113,77 @@ const ShoppingCart = () => {
     } catch (error) {
       console.error('Error sending email:', error);
       setNotification({ message: 'Error during checkout. Please try again later.', show: true });
+    } finally {
+      setIsPlacingOrder(false); // Ensure loading screen is hidden
     }
-  };
-
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
   return (
     <div>
-      <Header />
-      {cartItems.length === 0 ? <EmptyCart /> : (
-        <Container className="row-shopping-cart" ref={cartRef}>
+      {isPlacingOrder ? (
+        <div>
+          <LoadingSpinner isPlacingOrder={isPlacingOrder}/>
+        </div>
+
+      ) : (
+      <>
+        <Header />
+        {cartItems.length === 0 ? <EmptyCart /> : (
+        <Container className="row-shopping-cart">
           <Row>
             <div>
               <h2>Your Cart</h2>
               <p>{cartItems.length} items in your cart</p>
             </div>
-            <Col md={8}>
+            <Col>
               {cartItems.map((item) => (
-                <Card key={item.key} className="card-shopping-cart mb-3">
+                <Card key={item.key} className="card-shopping-cart">
                   <Card.Body>
                     <Row>
                       <Col md={3}>
                         <Card.Img className='card-cart-img' src={item.imagepath} alt={item.name} />
                       </Col>
-                      <Col md={9}>
-                        {item.name}
-                        <p><strong>Each: </strong>₹{item.price.toFixed(2)}</p>
+                      <Col>
+                        <Card.Title className='card-cart-title'>{item.productname}</Card.Title>   
+                        <div className='card-cart-shortdesc'>{"(" + item.shortdesc + ", " + item.selectedStorage + " GB" + ")" }</div>                   
+                        <div className='card-cart-price'>
+                          <strong>Each: </strong>₹{item.price.toFixed(2)}
+                          {item.appliedCredits && loggedIn && userType === 1 ? (
+                            <>
+                              {' + '}
+                              <img className='coin-32px' src={`${process.env.PUBLIC_URL}/assets/images/coin.png`} alt="Coin" />
+                              {'100'}
+                            </>
+                          ) : null}
+                        </div>
                         <Form.Group as={Row} controlId={`quantity-${item.key}`} className="quantity-control">
-                          <Form.Label column sm="2">
-                            Quantity:
-                          </Form.Label>
-                          <Col sm="4" className='d-flex align-items-center'>
-                            <Button variant="outline-secondary" size="sm" onClick={() => decrementItem(item.key)}>
+                          <Form.Label column sm="2">Quantity:</Form.Label>
+                          <div className='quantity-div'>
+                            <button type="button" className="quantity-button" onClick={() => decrementItem(item.key)}>
                               -
-                            </Button>
-                            <Form.Control
-                              type="number"
-                              value={item.quantity}
-                              readOnly
-                              className="quantity-input mx-2"
-                            />
-                            <Button variant="outline-secondary" size="sm" onClick={() => incrementItem(item.key)}>
+                            </button>
+                            <Form.Control type="number" value={item.quantity} readOnly className="quantity-input" />
+                            <button type="button" className="quantity-button" onClick={() => incrementItem(item.key)} disabled={item.quantity >= item.stock ? true : false}>
                               +
-                            </Button>
-                          </Col>
+                            </button>
+                          </div>
                         </Form.Group>
-                        <p><strong>Total: </strong>₹{(item.price * item.quantity).toFixed(2)}</p>
-                        <Button variant="danger" size="sm" onClick={() => removeFromCart(item.key)}>
+                        <p>
+                          <strong>Total: </strong>₹{(item.price * item.quantity).toFixed(2)}
+                          {item.appliedCredits && loggedIn && userType === 1 ? (
+                            <>
+                              {' + '}
+                              <img className='coin-32px' src={`${process.env.PUBLIC_URL}/assets/images/coin.png`} alt="Coin" />
+                              {100 * item.quantity}
+                              {/* {_totalCredits > userEpoint && (
+                                <span className='text-danger'>
+                                  {` (Not enough credits by ${_totalCredits - userEpoint} points)`}
+                                </span>
+                              )} */}
+                            </>
+                          ) : null}
+                        </p>
+                        <Button className="custom-delete-button" onClick={() => removeFromCart(item.key)}>
                           <FontAwesomeIcon icon={faTrash} /> Remove
                         </Button>
                       </Col>
@@ -167,21 +199,24 @@ const ShoppingCart = () => {
               <div className="cart-promotion">
                 <h4>Promotions</h4>
                 <ListGroup variant="flush" className='cart-summary'>
-                  <ListGroup.Item>Free Shipping on Orders Above ₹10000</ListGroup.Item>
+                  <ListGroup.Item>Free Shipping on Orders Above ₹100</ListGroup.Item>
                   <ListGroup.Item>Subtotal <span className="float-end">₹{calculateTotal()}</span></ListGroup.Item>
-                  <ListGroup.Item>Shipping cost <span className="float-end">₹18.97</span></ListGroup.Item>
+                  <ListGroup.Item>Shipping cost <span className="float-end">+₹18.97</span></ListGroup.Item>
                   <ListGroup.Item>Shipping Discount <span className="text-danger float-end">-₹18.97</span></ListGroup.Item>
-                  <ListGroup.Item>Estimated Sales Tax <span className="float-end">TBD</span></ListGroup.Item>
-                  <ListGroup.Item><strong>Estimated Total</strong> <span className="float-end"><strong>₹{calculateTotal()}</strong></span></ListGroup.Item>
+                  <ListGroup.Item>Estimated Sales Tax <span className="float-end">+₹{calculateTotal() * .10}</span></ListGroup.Item>
+                  <ListGroup.Item><strong>Estimated Total</strong> <span className="float-end"><strong>₹{Number(calculateTotal()) + Number(calculateTotal() * .10)}</strong></span></ListGroup.Item>
                 </ListGroup>
-                <Button className="w-100 mt-3 checkout-button" variant="success" onClick={handleCheckout}>
+                <Button className="w-100 mt-3 checkout-button" onClick={() => handleCheckout()}>
                   CHECKOUT
                 </Button>
               </div>
             </Col>
           </Row>
-        </Container>
-      )}
+          <div >
+            <Invoice  ref={invoiceRef} cartItems={cartItems} userName={userName || userEmail} />
+          </div>
+        </Container>)}
+      </>)}
       <Notification message={notification.message} show={notification.show} />
     </div>
   );

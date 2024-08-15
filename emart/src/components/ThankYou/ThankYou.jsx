@@ -25,9 +25,9 @@ const ThankYou = () => {
       <div className="thank-you-content">
         <div className="thank-you-text">
           <h1>{currentTime.toLocaleTimeString()}</h1>
-          <p className="fine-text">{formattedDate}</p>
+          <p className="fine-text text-p">{formattedDate}</p>
           <h2 className='text-thank-you'>Thank you!</h2>
-          <p>We are pleased to have received your order. An invoice has been sent to your email!</p>
+          <p className='text-p'>We are pleased to have received your order. An invoice has been sent to your email!</p>
           <button className="home-button" onClick={() => window.location.href = '/'}>
           <FontAwesomeIcon className="arrow" icon={faAngleLeft} />Continue Shopping</button>
         </div>

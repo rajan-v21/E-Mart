@@ -22,6 +22,7 @@ const ProductAllPage = () => {
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ message: '', show: false });
   const [checkboxState, setCheckboxState] = useState({});
+  const selectedStorage = 128;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,7 +62,8 @@ const ProductAllPage = () => {
         price, 
         key: `${product.productId}-${checkboxState[product.productId]}`, // Unique key for the cart item based on checkbox state
         appliedCredits: checkboxState[product.productId] ? 100 : 0,  // Indicate whether credits were applied
-        checked: checkboxState[product.productId] ? true : false  // Indicate whether the checkbox was checked
+        checked: checkboxState[product.productId] ? true : false,  // Indicate whether the checkbox was checked
+        selectedStorage: selectedStorage || 128
       };
 
       if (checkboxState[product.productId] === true) {

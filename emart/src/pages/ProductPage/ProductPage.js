@@ -57,7 +57,8 @@ function ProductPage() {
           ...product, 
           price, 
           key: `${product.productId}-${checkboxState}`, // Unique key for the cart item based on checkbox state
-          appliedCredits: checkboxState
+          appliedCredits: checkboxState,
+          selectedStorage: selectedStorage || 128
         };
         if (checkboxState === true) {
           if (userEpoint >= 100) {

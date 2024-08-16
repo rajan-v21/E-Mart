@@ -123,6 +123,7 @@ const ShoppingCart = () => {
       {isPlacingOrder ? (
         <div>
           <LoadingSpinner isPlacingOrder={isPlacingOrder}/>
+          
         </div>
 
       ) : (
@@ -203,7 +204,7 @@ const ShoppingCart = () => {
                   <ListGroup.Item>Subtotal <span className="float-end">₹{calculateTotal()}</span></ListGroup.Item>
                   <ListGroup.Item>Shipping cost <span className="float-end">+₹18.97</span></ListGroup.Item>
                   <ListGroup.Item>Shipping Discount <span className="text-danger float-end">-₹18.97</span></ListGroup.Item>
-                  <ListGroup.Item>Estimated Sales Tax <span className="float-end">+₹{calculateTotal() * .10}</span></ListGroup.Item>
+                  <ListGroup.Item>Estimated Sales Tax <span className="float-end">+₹{(calculateTotal() * .10).toFixed(2)}</span></ListGroup.Item>
                   <ListGroup.Item><strong>Estimated Total</strong> <span className="float-end"><strong>₹{Number(calculateTotal()) + Number(calculateTotal() * .10)}</strong></span></ListGroup.Item>
                 </ListGroup>
                 <Button className="w-100 mt-3 checkout-button" onClick={() => handleCheckout()}>
@@ -212,8 +213,9 @@ const ShoppingCart = () => {
               </div>
             </Col>
           </Row>
-          <div >
-            <Invoice  ref={invoiceRef} cartItems={cartItems} userName={userName || userEmail} />
+          {/* style={{ display: 'none' }} */}
+          <div>
+            <Invoice display={isPlacingOrder} ref={invoiceRef} cartItems={cartItems} userName={userName || userEmail} />
           </div>
         </Container>)}
       </>)}

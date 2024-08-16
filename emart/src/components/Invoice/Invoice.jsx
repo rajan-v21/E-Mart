@@ -100,6 +100,15 @@ const Invoice = forwardRef(({ cartItems, userName }, ref) => {
               <h5 className="invoice-h5">₹{calculateTotal()}</h5>
             </Col>
           </Row>
+          <Row className="mt-5">
+            <Col>
+              <h1>Thank you for trusting us.</h1>
+            </Col>
+            <Col className="text-end">
+              <p>Contact</p>
+              <p>emartgrp05@gmail.com</p>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
     </div>

@@ -4,6 +4,7 @@
     font-family: 'Playfair Display', serif;
     margin: 5% 15%;
     width: 70%;
+    padding: 2rem;
   }
   
   .invoice-title {
@@ -16,6 +17,7 @@
   .invoice-table {
     text-align: center;
     vertical-align: middle;
+    border: 1px solid #181818;
   }
   
   .invoice-table th {

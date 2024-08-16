@@ -34,9 +34,10 @@ public class InvoiceService implements InvoiceServ {
     public Invoice updateInvoice(int id, Invoice invoiceDetails) {
         Invoice invoice = invoiceRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Invoice not found for this id :: " + id));
-
+        invoice.setInvoiceid(invoiceDetails.getInvoiceid());
         invoice.setUserid(invoiceDetails.getUserid());
         invoice.setTotalamt(invoiceDetails.getTotalamt());
+        invoice.setTax(invoiceDetails.getTax());
         invoice.setDate(invoiceDetails.getDate());
 
         return invoiceRepository.save(invoice);

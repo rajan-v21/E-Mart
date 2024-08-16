@@ -9,27 +9,39 @@ import java.time.LocalDate;
 public class Invoice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    
     @Column(name = "invoiceid")
-    private int invoiceid;
+    private String invoiceid;
+    
+    @Column(name = "date")
+    private String date;
 
-    @Column(name = "userid")
+	@Column(name = "userid")
     private int userid;
 
     @Column(name = "totalamt", precision = 10, scale = 2, columnDefinition = "double default 0")
     private BigDecimal totalamt;
 
-    @Column(name = "date")
-    private LocalDate date;
+    @Column(name = "tax", precision = 10, scale = 2, columnDefinition = "double default 0")
+    private BigDecimal tax;
 
     // Getters and Setters
-    public int getInvoiceid() {
+    public String getInvoiceid() {
         return invoiceid;
     }
 
-    public void setInvoiceid(int invoiceid) {
+    public void setInvoiceid(String invoiceid) {
         this.invoiceid = invoiceid;
     }
+    
+    public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
 
     public int getUserid() {
         return userid;
@@ -47,11 +59,11 @@ public class Invoice {
         this.totalamt = totalamt;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public BigDecimal getTax() {
+        return tax;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
     }
 }

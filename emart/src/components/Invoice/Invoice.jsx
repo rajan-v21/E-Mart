@@ -1,9 +1,12 @@
-import React, { forwardRef } from "react";
-import { Container, Row, Col, Table, Card } from "react-bootstrap";
+import React, { forwardRef, useContext } from "react";
+import { Row, Col, Table, Card } from "react-bootstrap";
+import { UserContext } from '../../context/UserContext';
 import "./invoice.css";
 
 // Forward the ref to the root element of the Invoice component
 const Invoice = forwardRef(({ cartItems, userName }, ref) => {
+
+  const { userId, userEmail} = useContext(UserContext);
 
     function formatInvoiceId(date) {
         const year = date.getFullYear();

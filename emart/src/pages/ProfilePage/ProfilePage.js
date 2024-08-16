@@ -4,7 +4,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import { UserContext } from '../../context/UserContext';
 
 const ProfilePage = () => {
-    const { loggedIn, userName, userEmail, userType, userEpoint} = useContext(UserContext);
+    const { loggedIn, userId, userName, userEmail, userType, userEpoint} = useContext(UserContext);
 
     if (!loggedIn) {
         return <LoadingSpinner />;
@@ -19,6 +19,7 @@ const ProfilePage = () => {
                         <Card.Body>
                             <Card.Title>{userName}</Card.Title>
                             <Card.Text>
+                            <strong>Email:</strong> {userId} <br />
                                 <strong>Email:</strong> {userEmail} <br />
                                 <strong>Epoints:</strong> {userEpoint} <br />
                                 <strong>Membership:</strong> {userType > 0 ? 'Prime' : 'Regular' } <br />

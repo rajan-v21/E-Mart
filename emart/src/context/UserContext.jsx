@@ -6,7 +6,7 @@ export const UserContext = createContext();
 // Create a provider component
 export const UserProvider = ({ children }) => {
   const loggedIn = JSON.parse(sessionStorage.getItem('user'));  
-  const userId = loggedIn ? loggedIn.userid : 0;
+  const userId = loggedIn ? loggedIn.userId : 0;
   const userEmail = loggedIn ? loggedIn.useremail : '';
   const userName = loggedIn ? loggedIn.username : 'Guest';
   const userType = loggedIn ? loggedIn.usertype : 0;

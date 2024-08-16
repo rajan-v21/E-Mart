@@ -18,12 +18,36 @@ import Invoice from '../../components/Invoice/Invoice';
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const { loggedIn, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
+  const { loggedIn, userId, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
   const { cartItems, incrementItem, decrementItem, removeFromCart } = useCart();
   const invoiceRef = useRef(null); // Use this ref to capture the entire container
   const { userEmail, userName } = useContext(UserContext); // Get userEmail and userName from context
   const [notification, setNotification] = useState({ message: '', show: false });
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+
+  function formatInvoiceId(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so we add 1
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Return the formatted date as YYYYMMDDHHMMSS
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  }
+  const invoiceId = new Date();
+
+  function formatCustomDate(date) {
+    const day = new Intl.DateTimeFormat('en-GB', { day: '2-digit' }).format(date);
+    const month = new Intl.DateTimeFormat('en-GB', { month: 'short' }).format(date);
+    const year = new Intl.DateTimeFormat('en-GB', { year: '2-digit' }).format(date);
+    
+    return `${day}, ${month} ${year}`;
+  }
+  const currentDate = new Date();
+
 
   const handleContinueShopping = () => {
     navigate('/', { replace: true });
@@ -31,6 +55,12 @@ const ShoppingCart = () => {
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  const calculateTax = () => {
+    const subtotal = parseFloat(calculateTotal());
+    const taxRate = 0.10; // Assuming a 10% tax rate
+    return (subtotal * taxRate).toFixed(2);
   };
 
   const handleCheckout = async () => {
@@ -42,6 +72,7 @@ const ShoppingCart = () => {
     setIsPlacingOrder(true);
 
     try {
+
       // Generate PDF from the entire shopping cart container
       const cartElement = invoiceRef.current;
 
@@ -108,8 +139,37 @@ const ShoppingCart = () => {
         },
       });
 
+
+      // Post invoice data to the backend
+      const invoiceid = formatInvoiceId(invoiceId);
+      const invoicedate = formatCustomDate(currentDate);
+      const tax = parseFloat(calculateTax());
+
+      const invoiceData = {
+        invoiceid: invoiceid,
+        date: invoicedate,
+        tax: tax,
+        totalamt: parseFloat(calculateTotal()) + tax,
+        userid: parseInt(userId), // From UserContext
+      };
+
+      //console.log('Invoice Data:', invoiceData);
+
+      // Post invoice data to the backend
+      await axios.post('http://localhost:8080/invoice', invoiceData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      //////////////////////////
+
+      const earnedEpoints = tax; // Get tax amount without precision
+
+      //post epoint in user table
+      //minus epoint in user table and then add epoint in invoice table
+
       setNotification({ message: 'Checkout successful. Email sent with your order summary.', show: true });
-      navigate('/thankyou');
+      navigate('/thankyou', {state: earnedEpoints});
     } catch (error) {
       console.error('Error sending email:', error);
       setNotification({ message: 'Error during checkout. Please try again later.', show: true });
@@ -205,7 +265,7 @@ const ShoppingCart = () => {
                   <ListGroup.Item>Shipping cost <span className="float-end">+₹18.97</span></ListGroup.Item>
                   <ListGroup.Item>Shipping Discount <span className="text-danger float-end">-₹18.97</span></ListGroup.Item>
                   <ListGroup.Item>Estimated Sales Tax <span className="float-end">+₹{(calculateTotal() * .10).toFixed(2)}</span></ListGroup.Item>
-                  <ListGroup.Item><strong>Estimated Total</strong> <span className="float-end"><strong>₹{Number(calculateTotal()) + Number(calculateTotal() * .10)}</strong></span></ListGroup.Item>
+                  <ListGroup.Item><strong>Estimated Total</strong> <span className="float-end"><strong>₹{(Number(calculateTotal()) + Number(calculateTotal() * .10)).toFixed(2)}</strong></span></ListGroup.Item>
                 </ListGroup>
                 <Button className="w-100 mt-3 checkout-button" onClick={() => handleCheckout()}>
                   CHECKOUT
@@ -213,7 +273,6 @@ const ShoppingCart = () => {
               </div>
             </Col>
           </Row>
-          {/* style={{ display: 'none' }} */}
           <div>
             <Invoice display={isPlacingOrder} ref={invoiceRef} cartItems={cartItems} userName={userName || userEmail} />
           </div>

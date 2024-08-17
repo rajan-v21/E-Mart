@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserContext } from './UserContext';
-import axios from 'axios'; // Import axios for making API calls
+import axios from 'axios';
 
 const CartContext = createContext();
 
@@ -9,11 +9,8 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-
   const [cartItems, setCartItems] = useState([]);
-
   const { userId, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
-
   const [initialEpoint, setInitialEpoint] = useState(0);
 
   useEffect(() => {
@@ -21,29 +18,44 @@ export const CartProvider = ({ children }) => {
       try {
         const response = await axios.get(`http://localhost:8080/users/${userId}/epoint`);
         const fetchedEpoint = response.data.epoint;
-        setInitialEpoint(fetchedEpoint); // Update state with fetched epoint      
+        setInitialEpoint(fetchedEpoint);
       } catch (error) {
         console.error('Error fetching user epoint:', error);
       }
     };
 
     if (userId) {
-      fetchUserEpoint(); // Fetch epoint only if userId exists
+      fetchUserEpoint();
     }
   }, [userId]);
+
+  useEffect(() => {
+    const storedCartItems = sessionStorage.getItem('cartItems');
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
+
+  const updateCartItems = (newCartItems) => {
+    setCartItems(newCartItems);
+    sessionStorage.setItem('cartItems', JSON.stringify(newCartItems));
+  };
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
       const existingProduct = prevItems.find((item) => item.key === product.key);
+      let updatedCart;
       if (existingProduct) {
-        return prevItems.map((item) =>  
+        updatedCart = prevItems.map((item) =>
           item.key === product.key
-            ? { ...item, quantity: item.quantity + 1}
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        return [...prevItems, { ...product, quantity: 1 }];
+        updatedCart = [...prevItems, { ...product, quantity: 1 }];
       }
+      updateCartItems(updatedCart);
+      return updatedCart;
     });
   };
 
@@ -51,65 +63,51 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => {
       const item = prevItems.find((item) => item.key === key);
       if (item && item.checked) {
-        // If the item was checked, reset the epoints
         setUserEpoint(initialEpoint);
       }
-      return prevItems.filter((item) => item.key !== key);
+      const updatedCart = prevItems.filter((item) => item.key !== key);
+      updateCartItems(updatedCart);
+      return updatedCart;
     });
   };
 
   const incrementItem = (key) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.key === key
-          ? {
-              ...item,
-              quantity:
-                item.checked
-                  ? userEpoint >= 100
-                      ? (setUserEpoint(userEpoint - 100),
-                        setCartItemCount((prevCount) => prevCount + 1),
-                        Math.max((item.quantity || 0) + 1, 1)) // Ensure quantity is not undefined
-                      : item.quantity
-                  : (item.quantity || 0) + 1, // Ensure quantity is not undefined
-            }
-          : item
-      )
-    );
+    setCartItems((prevItems) => {
+      const updatedCart = prevItems.map((item) => {
+        if (item.key === key) {
+          const newQuantity = item.checked && userEpoint >= 100
+            ? (setUserEpoint(userEpoint - 100), Math.max((item.quantity || 0) + 1, 1))
+            : Math.max((item.quantity || 0) + 1, 1);
+          setCartItemCount((prevCount) => prevCount + 1);
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      });
+      updateCartItems(updatedCart);
+      return updatedCart;
+    });
   };
 
   const decrementItem = (key) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) => {
+    setCartItems((prevItems) => {
+      const updatedCart = prevItems.map((item) => {
         if (item.key === key) {
+          let newQuantity = Math.max((item.quantity || 0) - 1, 1);
           if (item.checked) {
-            console.log(initialEpoint, userEpoint);
-            // const user = JSON.parse(sessionStorage.getItem('user')); 
-            // const initialEpoint = loggedIn ? loggedIn.epoint : 0;
-            // If item is checked, handle epoint adjustment
             if (userEpoint < initialEpoint) {
-              console.log('Not enough epoints');
-              // Adjust epoints and quantity if epoints are less than original
-              setUserEpoint(Math.min(userEpoint + 100, initialEpoint-100));
-              setCartItemCount((prevCount) => Math.max(prevCount - 1, 0));
-              return {
-                ...item,
-                quantity: Math.max((item.quantity || 0) - 1, 1), // Ensure quantity does not fall below 1
-              };
+              setUserEpoint(Math.min(userEpoint + 100, initialEpoint - 100));
             }
-          } else {
-            // If item is not checked, just decrement the quantity
-            return {
-              ...item,
-              quantity: Math.max((item.quantity || 0) - 1, 1), // Ensure quantity does not fall below 1
-            };
+            newQuantity = Math.max(newQuantity, 1);
           }
+          setCartItemCount((prevCount) => Math.max(prevCount - 1, 0));
+          return { ...item, quantity: newQuantity };
         }
         return item;
-      })
-    );
+      });
+      updateCartItems(updatedCart);
+      return updatedCart;
+    });
   };
-  
 
   const value = {
     cartItems,

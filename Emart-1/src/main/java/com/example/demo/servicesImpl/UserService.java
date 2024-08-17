@@ -5,9 +5,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.User;
 import com.example.demo.repositories.UserRepository;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
 
 @Service
 public class UserService {
+	
+	//private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     private UserRepository userRepository;
@@ -22,7 +27,9 @@ public class UserService {
             int points = user.getEpoint();
         	user.setEpoint(points); // Assign 500 ePoints to prime members
         }
-
+        
+        // Hash the password before saving
+        //user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully";
     }
@@ -36,6 +43,10 @@ public class UserService {
         if (user == null) {
             throw new RuntimeException("User does not exist");
         }
+        
+//        if (!passwordEncoder.matches(password, user.getPassword())) {
+//            throw new RuntimeException("Invalid password");
+//        }
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid password");
         }

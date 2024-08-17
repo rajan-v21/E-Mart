@@ -63,22 +63,6 @@ const ShoppingCart = () => {
     return (subtotal * taxRate).toFixed(2);
   };
 
-  async function sendEmail() {
-    // html2canvas(invoiceRef.current).then((canvas) => {
-    //   const image = canvas.toDataURL('image/png');
-    //   const pdf = new jsPDF();
-    //   pdf.addImage(image, 'PNG', 0, 0, 210, 297);
-    //   pdf.save('invoice.pdf');
-    // });
-    try{
-
-
-
-    }catch(error){
-      setNotification({ message: 'Error during checkout.', show: true });
-    }
-  }
-
   const handleCheckout = async () => {
     if (!userEmail) {
       setNotification({ message: 'Please sign in to checkout', show: true });
@@ -179,28 +163,14 @@ const ShoppingCart = () => {
       //////////////////////////
 
       const earnedEpoints = Math.round(tax); // Get tax amount without precision
-
-      //get epoint from session storage
-      //post epoint in user table
-      //minus epoint in user table and then add epoint in invoice table
       const updatedEpoints = userEpoint + earnedEpoints; // Calculate the new ePoints
       await axios.put(`http://localhost:8080/users/${userId}/updateEpoints`, { epoint: updatedEpoints });
       setUserEpoint(updatedEpoints); // Update the userEpoint in the context
-      console.log('Invoice Data:', invoiceData);
-      //-------------------------------------------------------------------//
-      // await sendEmail();
-
-
-      
-      
-      
-
 
       setNotification({ message: 'Checkout successful. Email sent with your order summary.', show: true });
       navigate('/thankyou', { state: { earnedEpoints: Math.round(tax) } });
 
     } catch (error) {
-      console.error('Error sending email:', error);
       setNotification({ message: 'Error during checkout. Please try again later.', show: true });
     } finally {
       setIsPlacingOrder(false); // Ensure loading screen is hidden

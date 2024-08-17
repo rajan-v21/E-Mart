@@ -13,6 +13,8 @@ public interface UserServ {
     // Authenticate a User
     User authenticateUser(String useremail, String password);
     
+    public User getUserById(int userId);
+    
     // Update ePoints for a User
     boolean updateEpoints(int userId, int newEpoints);
 }

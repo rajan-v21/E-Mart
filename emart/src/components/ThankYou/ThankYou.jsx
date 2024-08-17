@@ -9,7 +9,9 @@ const ThankYou = () => {
   const [animationData, setAnimationData] = useState(null);
   const [currentTime] = useState(new Date());
   const location = useLocation();
-  const { earnedEpoints } = location.state || {};
+  // Destructure earnedEpoints from location.state
+  const { state } = location;
+  const earnedEpoints = state?.earnedEpoints || 0; // Default to 0 if not provided
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/assets/orderplaced1.json`)

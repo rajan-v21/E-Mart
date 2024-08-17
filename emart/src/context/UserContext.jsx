@@ -1,10 +1,16 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+
 
 // Create the context
 export const UserContext = createContext();
 
 // Create a provider component
 export const UserProvider = ({ children }) => {
+
+  // Fetch user epoint from API when component mounts
+  
+
+
   const loggedIn = JSON.parse(sessionStorage.getItem('user'));  
   const userId = loggedIn ? loggedIn.userId : 0;
   const userEmail = loggedIn ? loggedIn.useremail : '';
@@ -19,19 +25,23 @@ export const UserProvider = ({ children }) => {
   //   }
   // };
 
+
+  
+
+
   const setUserEpoint = (newEpoint) => {
     // Ensure that userEpoint does not go below 0
     if (newEpoint >= 0) {
       setUserEpointState(newEpoint);
       // Update the sessionStorage to keep it in sync so on refresh points don't reset to 100
-      // const updatedUser = { ...loggedIn, epoint: newEpoint };
-      // sessionStorage.setItem('user', JSON.stringify(updatedUser));
+      const updatedUser = { ...loggedIn, epoint: newEpoint };
+      sessionStorage.setItem('user', JSON.stringify(updatedUser));
     }
   };
 
   return (
     <UserContext.Provider value={{
-      loggedIn, userId, userEmail, userName, userType, 
+      loggedIn, userId, userEmail, userName, userType,
       cartItemCount, setCartItemCount, 
       userEpoint, setUserEpoint }}>
       {children}

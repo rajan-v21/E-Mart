@@ -24,13 +24,16 @@ public class InvoiceController {
         List<Invoice> invoices = invoiceService.getAllInvoices();
         return ResponseEntity.ok(invoices);
     }
-
-    // Get invoice by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getInvoiceById(@PathVariable int id) {
-        Optional<Invoice> invoice = invoiceService.getInvoiceById(id);
-        return invoice.map(ResponseEntity::ok)
-                      .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    
+    //get invoices by user id
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Invoice>> getInvoicesByUserId(@PathVariable int userId) {
+        List<Invoice> invoices = invoiceService.getInvoicesByUserId(userId);
+        if (invoices != null && !invoices.isEmpty()) {
+            return ResponseEntity.ok(invoices);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     // Create new invoice

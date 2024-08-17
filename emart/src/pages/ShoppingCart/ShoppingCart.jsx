@@ -63,6 +63,22 @@ const ShoppingCart = () => {
     return (subtotal * taxRate).toFixed(2);
   };
 
+  async function sendEmail() {
+    // html2canvas(invoiceRef.current).then((canvas) => {
+    //   const image = canvas.toDataURL('image/png');
+    //   const pdf = new jsPDF();
+    //   pdf.addImage(image, 'PNG', 0, 0, 210, 297);
+    //   pdf.save('invoice.pdf');
+    // });
+    try{
+
+
+
+    }catch(error){
+      setNotification({ message: 'Error during checkout.', show: true });
+    }
+  }
+
   const handleCheckout = async () => {
     if (!userEmail) {
       setNotification({ message: 'Please sign in to checkout', show: true });
@@ -72,6 +88,7 @@ const ShoppingCart = () => {
     setIsPlacingOrder(true);
 
     try {
+
 
       // Generate PDF from the entire shopping cart container
       const cartElement = invoiceRef.current;
@@ -138,7 +155,7 @@ const ShoppingCart = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      //---------------------------------------------------------------------//
 
       // Post invoice data to the backend
       const invoiceid = formatInvoiceId(invoiceId);
@@ -153,8 +170,6 @@ const ShoppingCart = () => {
         userid: parseInt(userId), // From UserContext
       };
 
-      //console.log('Invoice Data:', invoiceData);
-
       // Post invoice data to the backend
       await axios.post('http://localhost:8080/invoice', invoiceData, {
         headers: {
@@ -163,13 +178,27 @@ const ShoppingCart = () => {
       });
       //////////////////////////
 
-      const earnedEpoints = tax; // Get tax amount without precision
+      const earnedEpoints = Math.round(tax); // Get tax amount without precision
 
+      //get epoint from session storage
       //post epoint in user table
       //minus epoint in user table and then add epoint in invoice table
+      const updatedEpoints = userEpoint + earnedEpoints; // Calculate the new ePoints
+      await axios.put(`http://localhost:8080/users/${userId}/updateEpoints`, { epoint: updatedEpoints });
+      setUserEpoint(updatedEpoints); // Update the userEpoint in the context
+      console.log('Invoice Data:', invoiceData);
+      //-------------------------------------------------------------------//
+      // await sendEmail();
+
+
+      
+      
+      
+
 
       setNotification({ message: 'Checkout successful. Email sent with your order summary.', show: true });
-      navigate('/thankyou', {state: earnedEpoints});
+      navigate('/thankyou', { state: { earnedEpoints: Math.round(tax) } });
+
     } catch (error) {
       console.error('Error sending email:', error);
       setNotification({ message: 'Error during checkout. Please try again later.', show: true });
@@ -208,7 +237,7 @@ const ShoppingCart = () => {
                         <Card.Title className='card-cart-title'>{item.productname}</Card.Title>   
                         <div className='card-cart-shortdesc'>{"(" + item.shortdesc + ", " + item.selectedStorage + " GB" + ")" }</div>                   
                         <div className='card-cart-price'>
-                          <strong>Each: </strong>₹{item.price.toFixed(2)}
+                          <strong>Each: </strong>₹{item.price}
                           {item.appliedCredits && loggedIn && userType === 1 ? (
                             <>
                               {' + '}
@@ -230,7 +259,7 @@ const ShoppingCart = () => {
                           </div>
                         </Form.Group>
                         <p>
-                          <strong>Total: </strong>₹{(item.price * item.quantity).toFixed(2)}
+                          <strong>Total: </strong>₹{(item.price * item.quantity)}
                           {item.appliedCredits && loggedIn && userType === 1 ? (
                             <>
                               {' + '}

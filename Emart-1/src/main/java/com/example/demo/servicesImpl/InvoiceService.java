@@ -19,8 +19,8 @@ public class InvoiceService implements InvoiceServ {
         return invoiceRepository.findAll();
     }
 
-    public Optional<Invoice> getInvoiceById(int id) {
-        return invoiceRepository.findById(id);
+    public List<Invoice> getInvoicesByUserId(int userId) {
+        return invoiceRepository.findByUserid(userId);
     }
 
     public Invoice saveInvoice(Invoice invoice) {

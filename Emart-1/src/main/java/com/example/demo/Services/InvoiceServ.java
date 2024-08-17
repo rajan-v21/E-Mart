@@ -10,8 +10,8 @@ public interface InvoiceServ {
     // Retrieve all Invoices
     List<Invoice> getAllInvoices();
 
-    // Retrieve an Invoice by its ID
-    Optional<Invoice> getInvoiceById(int id);
+    // Retrieve an Invoice by user ID
+    List<Invoice> getInvoicesByUserId(int id);
 
     // Save an Invoice
     Invoice saveInvoice(Invoice invoice);

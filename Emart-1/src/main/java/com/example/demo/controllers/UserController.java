@@ -46,4 +46,18 @@ public class UserController {
             return ResponseEntity.status(500).body("Error updating ePoints: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/{id}/epoint")
+    public ResponseEntity<User> getEpoints(@PathVariable int id) {
+        try {
+            User user = userService.getUserById(id);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.status(404).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

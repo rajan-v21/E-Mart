@@ -18,7 +18,7 @@ import Invoice from '../../components/Invoice/Invoice';
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
-  const { loggedIn, userId, userType, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
+  const { loggedIn, userId, userType, userEpoint, setUserEpoint, cartItemCount, setCartItemCount } = useContext(UserContext);
   const { cartItems, incrementItem, decrementItem, removeFromCart } = useCart();
   const invoiceRef = useRef(null); // Use this ref to capture the entire container
   const { userEmail, userName } = useContext(UserContext); // Get userEmail and userName from context
@@ -193,7 +193,7 @@ const ShoppingCart = () => {
           <Row>
             <div>
               <h2>Your Cart</h2>
-              <p>{cartItems.length} items in your cart</p>
+              <p>{cartItemCount} items in your cart</p>
             </div>
             <Col>
               {cartItems.map((item) => (

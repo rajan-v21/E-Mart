@@ -44,7 +44,7 @@ const ProfilePage = () => {
                         <Card.Header>User Profile</Card.Header>
                         <Card.Body>
                             <Card.Title>{userName}</Card.Title>
-                            <Card.Text>
+                            <Card.Text style={{textAlign: 'left'}}>
                                 <strong>UserId:</strong> {userId} <br />
                                 <strong>Email:</strong> {userEmail} <br />
                                 <strong>Epoints:</strong> {userEpoint} <br />

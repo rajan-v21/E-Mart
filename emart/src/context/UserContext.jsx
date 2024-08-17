@@ -17,7 +17,16 @@ export const UserProvider = ({ children }) => {
   const userName = loggedIn ? loggedIn.username : 'Guest';
   const userType = loggedIn ? loggedIn.usertype : 0;
   const [userEpoint, setUserEpointState] = useState(loggedIn ? loggedIn.epoint : 0);
-  const [cartItemCount, setCartItemCount] = useState(0);
+  const [cartItemCount, setCartItemCount] = useState(() => {
+    const savedCartItemCount = sessionStorage.getItem('cartItemCount');
+    return savedCartItemCount ? parseInt(savedCartItemCount, 10) : 0;
+  });
+
+  // Update cartItemCount in sessionStorage when it changes
+  useEffect(() => {
+    sessionStorage.setItem('cartItemCount', cartItemCount);
+  }, [cartItemCount]);
+
 
   // const setCartItemCount = (newCount) => {
   //   if (newCount >= 0) {
@@ -26,6 +35,10 @@ export const UserProvider = ({ children }) => {
   // };
 
 
+   // Update cartItemCount in localStorage when it changes
+   useEffect(() => {
+    sessionStorage.setItem('cartItemCount', cartItemCount);
+  }, [cartItemCount]);
   
 
 

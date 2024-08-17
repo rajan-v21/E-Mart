@@ -48,7 +48,14 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (key) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.key !== key));
+    setCartItems((prevItems) => {
+      const item = prevItems.find((item) => item.key === key);
+      if (item && item.checked) {
+        // If the item was checked, reset the epoints
+        setUserEpoint(initialEpoint);
+      }
+      return prevItems.filter((item) => item.key !== key);
+    });
   };
 
   const incrementItem = (key) => {

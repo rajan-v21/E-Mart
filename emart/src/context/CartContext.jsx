@@ -80,10 +80,10 @@ export const CartProvider = ({ children }) => {
             // const user = JSON.parse(sessionStorage.getItem('user')); 
             // const initialEpoint = loggedIn ? loggedIn.epoint : 0;
             // If item is checked, handle epoint adjustment
-            if (sessionStorage.getItem('user') && userEpoint < initialEpoint) {
+            if (userEpoint < initialEpoint) {
               console.log('Not enough epoints');
               // Adjust epoints and quantity if epoints are less than original
-              setUserEpoint((prevEpoints) => Math.min(prevEpoints + 100, initialEpoint));
+              setUserEpoint(Math.min(userEpoint + 100, initialEpoint-100));
               setCartItemCount((prevCount) => Math.max(prevCount - 1, 0));
               return {
                 ...item,

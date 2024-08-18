@@ -75,15 +75,20 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => {
       const updatedCart = prevItems.map((item) => {
         if (item.key === key) {
-          const newQuantity = item.checked && userEpoint >= 100
-            ? (setUserEpoint(userEpoint - 100), Math.max((item.quantity || 0) + 1, 1))
-            : Math.max((item.quantity || 0) + 1, 1);
-          setCartItemCount((prevCount) => prevCount + 1);
+          let newQuantity = item.quantity || 0;
+          if (item.checked && userEpoint >= 100) {
+            newQuantity += 1;
+            setUserEpoint(userEpoint - 100); // Deduct epoint
+          } else if (!item.checked) {
+            newQuantity += 1; // No epoint required for unchecked items
+          }
           return { ...item, quantity: newQuantity };
         }
         return item;
       });
       updateCartItems(updatedCart);
+      // Update the cart item count here if necessary
+      setCartItemCount(updatedCart.reduce((count, item) => count + item.quantity, 0));
       return updatedCart;
     });
   };
@@ -92,22 +97,33 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => {
       const updatedCart = prevItems.map((item) => {
         if (item.key === key) {
-          let newQuantity = Math.max((item.quantity || 0) - 1, 1);
+          let newQuantity = Math.max((item.quantity || 0) - 1, 1); // Ensure quantity doesn't go below 1
+          
           if (item.checked) {
+            // Restore epoints if item is checked
             if (userEpoint < initialEpoint) {
-              setUserEpoint(Math.min(userEpoint + 100, initialEpoint - 100));
+              const newEpoint = Math.min(userEpoint + 100, initialEpoint);
+              setUserEpoint(newEpoint); // Set epoint back
             }
-            newQuantity = Math.max(newQuantity, 1);
           }
-          setCartItemCount((prevCount) => Math.max(prevCount - 1, 0));
+  
+          // Update item quantity and cart item count
+          const newCartItemCount = prevItems.reduce((count, item) => {
+            return item.key === key ? count + newQuantity : count + (item.quantity || 0);
+          }, 0);
+  
+          setCartItemCount(newCartItemCount);
+  
           return { ...item, quantity: newQuantity };
         }
         return item;
       });
+  
       updateCartItems(updatedCart);
       return updatedCart;
     });
   };
+  
 
   const value = {
     cartItems,

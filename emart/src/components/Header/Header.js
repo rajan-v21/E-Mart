@@ -21,6 +21,8 @@ const Header = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('cartItems'); // Clear cart items
+    sessionStorage.removeItem('cartItemCount'); // Clear cart item count
     window.location.reload();
   };
 

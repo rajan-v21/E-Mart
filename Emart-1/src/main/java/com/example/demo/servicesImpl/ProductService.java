@@ -38,6 +38,10 @@ public class ProductService implements ProductServ {
         return productRepository.findAll();
     }
     
+    public List<Product> searchProductsByName(String name) {
+        return productRepository.findByProductnameContainingIgnoreCase(name);
+    }
+    
     public String updateProduct(int id, Product updatedProduct) {
         Optional<Product> existingProductOpt = productRepository.findById(id);
         if (existingProductOpt.isPresent()) {

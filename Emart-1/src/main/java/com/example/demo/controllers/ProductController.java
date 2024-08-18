@@ -40,6 +40,11 @@ public class ProductController {
     public List<Product> getProductsBySubcategory(@PathVariable int subcategoryid) {
         return productRepository.findBySubcategoryid(subcategoryid);
     }
+    
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam String name) {
+        return productService.searchProductsByName(name);
+    }
 
     // Add a new Product
     @PostMapping

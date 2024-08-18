@@ -10,7 +10,7 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const { userId, userEpoint, setUserEpoint, setCartItemCount } = useContext(UserContext);
+  const { userId, userEpoint, setUserEpoint, cartItemCount, setCartItemCount } = useContext(UserContext);
   const [initialEpoint, setInitialEpoint] = useState(0);
 
   useEffect(() => {
@@ -43,7 +43,10 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
+      // Find if the product already exists in the cart
       const existingProduct = prevItems.find((item) => item.key === product.key);
+      
+      // Create updated cart based on the existence of the product
       let updatedCart;
       if (existingProduct) {
         updatedCart = prevItems.map((item) =>
@@ -54,22 +57,65 @@ export const CartProvider = ({ children }) => {
       } else {
         updatedCart = [...prevItems, { ...product, quantity: 1 }];
       }
+  
+      // Update the cart items
       updateCartItems(updatedCart);
+  
+      // Calculate new cart item count
+      const newCartItemCount = updatedCart.reduce((count, item) => count + item.quantity, 0);
+      
+      // Update cart item count state
+      setCartItemCount(newCartItemCount);
+      
+      // Log the updated item count
+      console.log('Item count after adding:', newCartItemCount);
+  
       return updatedCart;
     });
   };
+  
 
   const removeFromCart = (key) => {
+    console.log('item count before removal:', cartItemCount);
     setCartItems((prevItems) => {
-      const item = prevItems.find((item) => item.key === key);
-      if (item && item.checked) {
-        setUserEpoint(initialEpoint);
+      // Find the item to remove
+      const itemToRemove = prevItems.find((item) => item.key === key);
+  
+      if (itemToRemove) {
+        // Calculate the quantity to subtract from the cart item count
+        const quantityToRemove = itemToRemove.quantity || 0;
+  
+        console.log('Removing item:', itemToRemove);
+        console.log('Quantity to remove:', quantityToRemove);
+  
+        // Remove the item from the cart
+        const updatedCart = prevItems.filter((item) => item.key !== key);
+  
+        // Update the cart item count
+        setCartItemCount((prevCount) => {
+          const newCount = Math.max(prevCount - quantityToRemove, 0);
+          console.log('Updated cart item count:', newCount);
+          return newCount;
+        });
+  
+        // Restore epoints if the item was checked
+        if (itemToRemove.checked) {
+          setUserEpoint(initialEpoint);
+        }
+  
+        // Update cart items in sessionStorage
+        updateCartItems(updatedCart);
+  
+        return updatedCart;
       }
-      const updatedCart = prevItems.filter((item) => item.key !== key);
-      updateCartItems(updatedCart);
-      return updatedCart;
+  
+      console.log('Item not found:', key);
+      return prevItems;
     });
   };
+  
+  
+  
 
   const incrementItem = (key) => {
     setCartItems((prevItems) => {
@@ -89,6 +135,7 @@ export const CartProvider = ({ children }) => {
       updateCartItems(updatedCart);
       // Update the cart item count here if necessary
       setCartItemCount(updatedCart.reduce((count, item) => count + item.quantity, 0));
+      console.log('item count after increment:', cartItemCount);
       return updatedCart;
     });
   };

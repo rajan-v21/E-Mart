@@ -148,7 +148,7 @@ export const CartProvider = ({ children }) => {
           
           if (item.checked) {
             // Restore epoints if item is checked
-            if (userEpoint < initialEpoint) {
+            if (userEpoint < initialEpoint-100) {
               const newEpoint = Math.min(userEpoint + 100, initialEpoint);
               setUserEpoint(newEpoint); // Set epoint back
             }

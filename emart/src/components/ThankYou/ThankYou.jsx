@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import './thankyou.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { UserContext } from '../../context/UserContext';
 
 const ThankYou = () => {
   const [animationData, setAnimationData] = useState(null);
@@ -12,6 +13,7 @@ const ThankYou = () => {
   // Destructure earnedEpoints from location.state
   const { state } = location;
   const earnedEpoints = state?.earnedEpoints || 0; // Default to 0 if not provided
+  const { loggedIn, userName, userType, userEpoint, cartItemCount } = useContext(UserContext);
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/assets/orderplaced1.json`)
@@ -33,9 +35,11 @@ const ThankYou = () => {
           <p className="fine-text text-p">{formattedDate}</p>
           <h2 className='text-thank-you'>Thank you!</h2>
           <p className='text-p'>We are pleased to have received your order. An invoice has been sent to your email!</p>
-          <p className='text-p'>Hurray! You have Earned 
+          {userType > 0 && (
+            <p className='text-p'>Hurray! You have Earned 
             <img className='coin-32px' src={`${process.env.PUBLIC_URL}/assets/images/coin.png`} alt="Coin" />
             {earnedEpoints} Epoints</p>
+          )}
           <button className="home-button" onClick={() => window.location.href = '/'}>
           <FontAwesomeIcon className="arrow" icon={faAngleLeft} />Continue Shopping</button>
         </div>

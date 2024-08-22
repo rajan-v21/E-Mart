@@ -167,6 +167,9 @@ const ShoppingCart = () => {
       await axios.put(`http://localhost:8080/users/${userId}/updateEpoints`, { epoint: updatedEpoints });
       setUserEpoint(updatedEpoints); // Update the userEpoint in the context
 
+      sessionStorage.removeItem('cartItems'); // Clear cart items
+      sessionStorage.setItem('cartItemCount', 0); // Reset cart item count
+
       setNotification({ message: 'Checkout successful. Email sent with your order summary.', show: true });
       navigate('/thankyou', { state: { earnedEpoints: Math.round(tax) } });
 

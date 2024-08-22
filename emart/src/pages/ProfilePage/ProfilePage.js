@@ -47,7 +47,7 @@ const ProfilePage = () => {
                             <Card.Text style={{textAlign: 'left'}}>
                                 <strong>UserId:</strong> {userId} <br />
                                 <strong>Email:</strong> {userEmail} <br />
-                                <strong>Epoints:</strong> {userEpoint} <br />
+                                <strong>Epoints:</strong> {userType > 0 ? (userEpoint) : 0} <br />
                                 <strong>Membership:</strong> {userType > 0 ? 'Prime' : 'Regular'} <br />
                             </Card.Text>
                         </Card.Body>
@@ -65,7 +65,7 @@ const ProfilePage = () => {
                                         <ListGroup.Item key={invoice.invoiceid}>
                                             <strong>InvoiceId:</strong> {invoice.invoiceid} <br />
                                             <strong>Date:</strong> {invoice.date} <br />
-                                            <strong>Epoints Earned:</strong> {Math.round(invoice.tax)} <br />
+                                            <strong>Epoints Earned:</strong> {userType > 0 ? (Math.round(invoice.tax)) : 0} <br />
                                             <strong>Total Amount:</strong> {invoice.totalamt} <br />
                                         </ListGroup.Item>
                                     ))}

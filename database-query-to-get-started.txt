@@ -1,0 +1,28 @@
+CREATE DATABASE project;
+--Java Project
+
+INSERT INTO category (categoryname, imagepath)
+VALUES
+('Apparels', '/assets/images/categories/apparel.png'),
+('Electronics', '/assets/images/categories/electronics.png'),
+('Grocery', '/assets/images/categories/grocery.png'),
+('Health', '/assets/images/categories/health.png'),
+('Home Essentials', '/assets/images/categories/homeessentials.png'),
+('Kitchen', '/assets/images/categories/kitchen.png');
+
+INSERT INTO subcategory (subcategoryname, imagepath, categoryid)
+VALUES
+('Camera', '/assets/images/categories/electronics/camera.png', 2),
+('Laptop', '/assets/images/categories/electronics/laptop.png', 2),
+('Mobile', '/assets/images/categories/electronics/mobile.jpg', 2);
+
+INSERT INTO products 
+(brandname, imagepath, isdiscounted, ispromoted, longdesc, price, productname, rating, shortdesc, stockquantity, subcategoryid)
+VALUES
+('Apple', '/assets/images/categories/electronics/mobiles/iphone14.jpg', TRUE, TRUE, 'iPhone 15 Pro features a 6.1" Super Retina XDR display, advanced dual-camera system, A15 Bionic chip, and crash detection. Fast, durable, and built for amazing photos and performance.', 700, 'Iphone 15 Pro', 4.3, 'Cosmic Grey, 5G', 3, 3),
+('Canon', '/assets/images/categories/electronics/cameras/canon.png', FALSE, FALSE, 'Capture sharp photos and Full HD videos with the Canon 1500D. Features a 24.1MP sensor, fast autofocus, and built-in Wi-Fi—ideal for beginners.', 400, 'Canon EOS 1500D', 4.2, '24.1 MP, 18-55mm Lens', 2, 1),
+('Apple', '/assets/images/categories/electronics/laptop/macbook.png', TRUE, FALSE, 'Experience powerful performance with the Apple M3 chip, stunning Liquid Retina XDR display, and long battery life—perfect for work or creativity on the go.', 1000, 'MacBook M3 Pro', 4.5, 'Space Grey, 14-inch', 4, 2),
+('Google', '/assets/images/categories/electronics/mobiles/googlepixel.jpg', TRUE, FALSE, 'Google Pixel 6 features the custom Tensor chip, 6.4" OLED display, pro-level camera, and pure Android experience—built for speed, security, and smart performance.', 500, 'Google Pixel 6', 4.1, 'Slate Grey, 5G', 6, 3),
+('One Plus', '/assets/images/categories/electronics/mobiles/oneplus4.jpg', FALSE, FALSE, 'The OnePlus 9R features a 6.55" Fluid AMOLED display, Snapdragon 870 processor, 48MP quad-camera system, and Warp Charge 65. Smooth performance and fast charging for everyday power users.', 400, 'OnePlus 9R', 3.8, 'Teal Green, 5G', 8, 3);
+
+
